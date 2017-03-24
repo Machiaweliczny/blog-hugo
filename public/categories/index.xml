@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Machiaweliczny dev</title>
+    <link>http://machiaweliczny.github.io/categories/index.xml</link>
+    <description>Recent content on Machiaweliczny dev</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="http://machiaweliczny.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>action_cable_5.0.0.1_bug</title>
+      <link>http://machiaweliczny.github.io/post/action_cable_5.0.0.1_bug/</link>
+      <pubDate>Fri, 24 Mar 2017 20:48:41 +0100</pubDate>
+      
+      <guid>http://machiaweliczny.github.io/post/action_cable_5.0.0.1_bug/</guid>
+      <description>&lt;p&gt;The is quite nasty bug in ActionCable 5.0.0.1 which I had to deal with recently:&lt;/p&gt;
+
+&lt;p&gt;As we can read in &lt;a href=&#34;https://github.com/rails/rails/blob/5-1-stable/actioncable/CHANGELOG.md&#34;&gt;changelog for 5.1.0&lt;/a&gt; there was a bug:&lt;/p&gt;
+
+&lt;p&gt;Protect against concurrent writes to a WebSocket connection from multiple threads; the underlying OS write is not always threadsafe.&lt;/p&gt;
+
+&lt;p&gt;Tracking this was hard because my application simply didn&amp;rsquo;t receive some messages when sidekiq jobs were trying to send messages simultanously. Message not delivered and no error raised =&amp;gt; fun debugging experience :)&lt;/p&gt;
+
+&lt;p&gt;Leaving this as short notice in case some of you are wondering why you might be losing messages with ActionCable 5.0.0.1.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Shorter way of defining reducers and testing them using updeep</title>
+      <link>http://machiaweliczny.github.io/post/shorter-way-of-defining-reducers/</link>
+      <pubDate>Fri, 24 Mar 2017 19:11:08 +0100</pubDate>
+      
+      <guid>http://machiaweliczny.github.io/post/shorter-way-of-defining-reducers/</guid>
+      <description>&lt;p&gt;While exploring &lt;a href=&#34;https://github.com/reactjs/redux/issues?q=is%3Aissue+label%3Adiscussion+is%3Aclosed&#34;&gt;discussion issues&lt;/a&gt; in redux  I found a nice library called &lt;a href=&#34;https://github.com/substantial/updeep&#34;&gt;updeep&lt;/a&gt; and it&amp;rsquo;s use to define reducers.&lt;/p&gt;
+
+&lt;p&gt;It looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-[javscript]&#34;&gt;import u from &#39;updeep&#39;
+
+export const reducer = createReducer({
+  // [action name]: action =&amp;gt; currentState =&amp;gt; nextState
+  startCompiling: () =&amp;gt; u({ compiling: true }),
+  errorCompiling: ({ error }) =&amp;gt; u({ compiling: false, compileError: error }),
+  startRunning: ({ app }) =&amp;gt; u({
+    running: () =&amp;gt; app,
+    compiling: false
+  }),
+  stopRunning: () =&amp;gt; u({ running: false }),
+  discardCompileError: () =&amp;gt; u({ compileError: null }),
+  // ...
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Source: &lt;a href=&#34;https://github.com/reactjs/redux/issues/1171#issuecomment-205888533&#34;&gt;https://github.com/reactjs/redux/issues/1171#issuecomment-205888533&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Ok there&amp;rsquo;s missing &lt;code&gt;createReducer&lt;/code&gt; function but we can define it on our own like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// definition := { [action.type]: action =&amp;gt; currentState =&amp;gt; nextState }
+export default function createReducer(initialState, definition){
+  return (state = initialState, action) =&amp;gt; {
+    const actionResponse = definition[action.type];
+    return actionResponse ? actionResponse(action)(state) : state;
+  };
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is more &lt;code&gt;actions&lt;/code&gt; oriented approach to the classical switch mentioned in redux docs,
+ which are more data oriented(when you use &lt;code&gt;combineReducers&lt;/code&gt; and switch).&lt;/p&gt;
+
+&lt;p&gt;What I like more about this updeep library is that it&amp;rsquo;s perfect for testing reducer mutation when you have complex data tree.&lt;/p&gt;
+
+&lt;p&gt;With it&amp;rsquo;s help you can write tests without any boilerplate like this(CoffeScript):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-[javascript]&#34;&gt;u = ...
+redux = ...
+
+initialState = redux.getState()
+
+# define data paths which you expect modified:
+expectedState =
+  first:
+    path: &amp;quot;foo&amp;quot;
+  other:
+    path:
+      one: &amp;quot;two&amp;quot;
+  and:
+    this: &amp;quot;bar&amp;quot;
+
+redux.dispatch({ type: &amp;quot;MY_ACTION&amp;quot; });
+expect(u(expectedState, initialState)).toEqual(redux.getState())
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
