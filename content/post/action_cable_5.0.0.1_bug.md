@@ -8,7 +8,7 @@ title = "action_cable_5.0.0.1_bug"
 
 +++
 
-The is quite nasty bug in ActionCable 5.0.0.1 which I had to deal with recently:
+There is quite nasty bug in ActionCable 5.0.0.1 which I had to deal with recently:
 
 As we can read in [changelog for 5.1.0](https://github.com/rails/rails/blob/5-1-stable/actioncable/CHANGELOG.md) there was a bug:
 
