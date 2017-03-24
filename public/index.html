@@ -283,7 +283,7 @@ jJasrM9JHpMQoTocKVCL4IPr/fOT+fzoT3p+SelrFs2odf2vmwZACVzT9SAJ8iKO6OCx+/tKkw2M
   </header>
   
   <div itemprop="description">
-    The is quite nasty bug in ActionCable 5.0.0.1 which I had to deal with recently:
+    There is quite nasty bug in ActionCable 5.0.0.1 which I had to deal with recently:
 As we can read in changelog for 5.1.0 there was a bug:
 Protect against concurrent writes to a WebSocket connection from multiple threads; the underlying OS write is not always threadsafe.
 Tracking this was hard because my application simply didn&rsquo;t receive some messages when sidekiq jobs were trying to send messages simultanously. Message not delivered and no error raised =&gt; fun debugging experience :)
