@@ -2,8 +2,6 @@ languageCode = "en-us"
 title = "Machiaweliczny dev"
 baseurl = "http://machiaweliczny.github.io/"
 
-
-title = "blog" # Homepage title and page title suffix
 paginate = 10 # Number of posts to show before paginating
 
 theme = "after-dark" # Uncomment to use as default theme
